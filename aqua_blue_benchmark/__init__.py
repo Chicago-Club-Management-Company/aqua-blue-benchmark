@@ -6,7 +6,7 @@ __author_emails__ = [
     "jane.doe@chicagoclubteam.org",
     "john.doe@chicagoclubteam.org"
 ]
-__url__ = "https://github.com/Chicago-Club-Management-Company/python-package-template"
+__url__ = "https://github.com/Chicago-Club-Management-Company/aqua-blue-benchmark"
 
 from . import foo as foo
 from . import bar as bar
