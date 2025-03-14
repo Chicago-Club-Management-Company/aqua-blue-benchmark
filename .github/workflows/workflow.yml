@@ -1,0 +1,90 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  tests:
+    name: test, lint, type check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Set up environment
+        run: >-
+          pip install .[dev]
+      - name: Test with pytest
+        run: >-
+          pytest -W error
+      - name: Lint with ruff
+        run: >-
+          ruff check cool_package/
+      - name: Type check with mypy
+        run: >-
+          mypy cool_package/
+
+  create-docs:
+    runs-on: ubuntu-latest
+    needs: tests
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: False
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Install dependencies
+        run: >-
+          pip install .[dev]
+      - name: Build pdoc documentation
+        run: >-
+          pdoc --html cool_package/ -o _build/
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdoc-docs
+          path: _build/
+
+  deploy-docs:
+    needs:
+      - create-docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download docs artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pdoc-docs
+          path: _build/
+
+      - name: Deploy documentation
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: _build/cool_package
+          clean: true
