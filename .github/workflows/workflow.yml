@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Set up environment
+      - name: Set up dev environment
         run: >-
           pip install .[dev]
       - name: Test with pytest
@@ -36,6 +36,40 @@ jobs:
       - name: Type check with mypy
         run: >-
           mypy aqua_blue_benchmark/
+      - name: Set up benchmarks environment
+        run: >-
+          pip install .[benchmarks]
+      - name: Lint with ruff
+        run: >- 
+          ruff check benchmarks/ 
+      - name: Type check with mypy
+        run: >-
+          mypy benchmarks/
+
+  benchmarks:
+    name: run benchmarks
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.9", "3.10", "3.11", "3.12" ]
+    permissions:
+      contents: read
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Set up benchmarks environment
+        run: >-
+          pip install .[benchmarks]
+      - name: Run benchmarks scripts
+        run: >-
+          for file in benchmarks/*.py; do python "$file"; done
+  
   
   create-docs:
     runs-on: ubuntu-latest
