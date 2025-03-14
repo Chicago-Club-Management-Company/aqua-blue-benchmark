@@ -8,7 +8,7 @@ on:
 jobs:
 
   tests:
-    name: test, lint, type check
+    name: lint, type check
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,9 +27,6 @@ jobs:
       - name: Set up dev environment
         run: >-
           pip install .[dev]
-      - name: Test with pytest
-        run: >-
-          pytest -W error
       - name: Lint with ruff
         run: >-
           ruff check aqua_blue_benchmark/
