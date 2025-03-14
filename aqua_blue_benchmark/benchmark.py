@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from typing import Callable, Union
 import numpy as np
 
-from tabulate import tabulate
+from tabulate import tabulate # type: ignore[import-untyped]
 
 class Stat(Enum): 
     MSE = 'mse'
