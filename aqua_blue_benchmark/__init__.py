@@ -17,5 +17,4 @@ __author_emails__ = [
 ]
 __url__ = "https://github.com/Chicago-Club-Management-Company/aqua-blue-benchmark"
 
-from . import foo as foo
-from . import bar as bar
+from . import benchmark as benchmark
