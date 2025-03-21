@@ -1,10 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import reservoirpy # type: ignore[import-untyped]
-from reservoirpy.datasets import mackey_glass # type: ignore[import-untyped]
-
-import aqua_blue # type: ignore[import-untyped]
+import reservoirpy
+from reservoirpy.datasets import mackey_glass 
+import aqua_blue 
 
 from typing import List
 
@@ -18,7 +17,7 @@ TRAIN_LEN = 1500
 TEST_LEN = 500
 LEAKING_RATE = 0.35
 SPECTRAL_RADIUS = 1.15
-RIDGE_COEFFICIENT = 1e-4
+RIDGE_COEFFICIENT = 1e-6
 RESERVOIR_DIMENSIONALITY = 100 
 
 GENERATOR = np.random.default_rng(seed=1928301923)
@@ -43,17 +42,23 @@ target_data = DATA[1:].reshape(-1, 1)
 # Split into train and test sets
 X_train, y_train = input_data[:TRAIN_LEN], target_data[:TRAIN_LEN]
 X_test, y_test = input_data[TRAIN_LEN:TRAIN_LEN+TEST_LEN], target_data[TRAIN_LEN:TRAIN_LEN+TEST_LEN]
-    
+
+
 # Build reservoirpy reservoir
 reservoir = reservoirpy.nodes.Reservoir(RESERVOIR_DIMENSIONALITY, lr=LEAKING_RATE, sr=SPECTRAL_RADIUS, W=W, Win=W_IN)
 readout = reservoirpy.nodes.Ridge(ridge=RIDGE_COEFFICIENT)
 
-# Train the model
-reservoir >>= readout
-readout.fit(X_train, y_train)
+readout.fit(reservoir.run(X_train), y_train)
 
 # Predict
-y_pred_rp = readout.run(X_test)
+y_pred_rp = []
+input_step = X_test[0].reshape(1, -1)
+
+for _ in range(len(X_test)):
+    res_state = reservoir.run(input_step) 
+    pred = readout.run(res_state)  
+    y_pred_rp.append(pred.item())  
+    input_step = pred.reshape(1, -1)
 
 # Aqua-Blue Setup 
 time_series = aqua_blue.time_series.TimeSeries(dependent_variable=DATA[:1500], times=np.arange(1500))
@@ -80,7 +85,7 @@ prediction = normalizer.denormalize(prediction)
 # Plot results
 plt.figure(figsize=(10, 5))
 plt.plot(np.arange(TRAIN_LEN+TEST_LEN-1), np.concatenate((y_train, y_test)), label='True Mackey-Glass')
-# plt.plot(np.arange(TRAIN_LEN, TRAIN_LEN+TEST_LEN-1), y_pred_rp, label='ReservoirPy Predicted Mackey-Glass', linestyle='--')
+plt.plot(np.arange(TRAIN_LEN, TRAIN_LEN+TEST_LEN-1), y_pred_rp, label='ReservoirPy Predicted Mackey-Glass', linestyle='--')
 plt.plot(np.arange(TRAIN_LEN, TRAIN_LEN+TEST_LEN), prediction.dependent_variable, label='Aqua-Blue Predicted Mackey-Glass', linestyle='--')
 plt.legend()
 plt.title('Mackey-Glass Time Series Benchmark')
