@@ -1,12 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import reservoirpy
-from reservoirpy.datasets import mackey_glass 
-import aqua_blue 
-
-from typing import List
-
+import reservoirpy # type: ignore
+from reservoirpy.datasets import mackey_glass # type: ignore 
+import aqua_blue # type: ignore
 
 # Dataset Generation
 TAU = 17
