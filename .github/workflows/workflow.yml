@@ -65,7 +65,7 @@ jobs:
           pip install .[benchmarks]
       - name: Run benchmarks scripts
         run: >-
-          for dir in benchmarks/*/; for file in ${dir}/*.py do python "$file"; done
+          for dir in benchmarks/*/; for file in ${dir}/*.py; do python "$file"; done
   
   
   create-docs:
