@@ -65,11 +65,11 @@ jobs:
           pip install .[benchmarks]
       - name: Run benchmarks scripts
         run: >-
-          for dir in benchmarks/*/; 
+          for dir in benchmarks/*; 
           do 
             for file in "${dir}"/*.py; 
               do 
-              python "${dir}/$file"; 
+              python "${dir}$file"; 
             done 
           done
   
