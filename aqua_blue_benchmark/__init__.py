@@ -17,5 +17,4 @@ __author_emails__ = [
 ]
 __url__ = "https://github.com/Chicago-Club-Management-Company/aqua-blue-benchmark"
 
-from annealer import optimize
-from annealer import plot_result
+from . import annealer as annealer
