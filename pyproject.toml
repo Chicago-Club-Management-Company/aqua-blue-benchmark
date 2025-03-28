@@ -43,7 +43,7 @@ dev = [
 ]
 benchmarks = [ 
     "reservoirpy~=0.3.12",
-    "aqua-blue~=0.1.7",
+    "aqua-blue~=0.2.8",
 ]
 
 [tool.hatch.version]
