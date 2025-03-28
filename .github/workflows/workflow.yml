@@ -65,15 +65,20 @@ jobs:
           pip install .[benchmarks]
       - name: Run benchmarks scripts
         run: >-
-          for file in benchmarks/*.py; do python "$file"; done
-  
+          for dir in benchmarks/*; 
+          do 
+            for file in "${dir}"/*.py; 
+              do 
+              python "$file"; 
+            done 
+          done
   
   create-docs:
     runs-on: ubuntu-latest
     needs: tests
     permissions:
       contents: read
-
+    
     steps:
       - uses: actions/checkout@v4
         with:

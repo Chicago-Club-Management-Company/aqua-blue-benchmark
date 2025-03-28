@@ -25,7 +25,8 @@ classifiers = [
 ]
 dependencies = [
     "numpy ~= 2.0.2",
-    "tabulate~=0.9.0"
+    "tabulate~=0.9.0",
+    "matplotlib~=3.9.4", 
 ]
 
 [project.urls]
@@ -37,12 +38,12 @@ dev = [
     "pytest~=8.0.2",
     "ruff~=0.9.4",
     "mypy~=1.13.0",
-    "pdoc3~=0.11.5"
+    "pdoc3~=0.11.5",
+    "progressbar2~=4.5.0"
 ]
 benchmarks = [ 
-    "matplotlib~=3.9.4", 
     "reservoirpy~=0.3.12",
-    "aqua-blue~=0.1.7",
+    "aqua-blue~=0.2.8",
 ]
 
 [tool.hatch.version]
